@@ -1,4 +1,4 @@
-package com.example.autoassignee.domain;
+package com.example.autoassignee.persistance.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.example.autoassignee.domain;
+package com.example.autoassignee.persistance.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +23,8 @@ public class Reviewer extends BaseEntity {
     private String username;
 
     @Column(name = "member_id")
-    private String memberId;
+    private Long memberId;
+
+    @Column(name = "review_access")
+    private boolean isReviewAccess;
 }
