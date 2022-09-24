@@ -1,6 +1,7 @@
 package com.example.autoassignee.service;
 
 import com.example.autoassignee.persistance.domain.Reviewer;
+import org.gitlab4j.api.GitLabApiException;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface ReviewerService {
      * @param username имя пользователя в GitLab нового ревьювера
      * @return Новый ревьювер
      */
-    Reviewer addNewReviewer(String username);
+    Reviewer addNewReviewer(String username) throws GitLabApiException;
 
     /**
      * Снять доступ к ревью для указанного пользователя

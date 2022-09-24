@@ -1,9 +1,12 @@
 package com.example.autoassignee.service.impl;
 
 import com.example.autoassignee.persistance.domain.Reviewer;
+import com.example.autoassignee.persistance.exception.AutoAssigneeException;
 import com.example.autoassignee.repository.ReviewerRepository;
 import com.example.autoassignee.service.GitlabApiService;
 import com.example.autoassignee.service.ReviewerService;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.Member;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,12 +33,33 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     @Override
-    public Reviewer addNewReviewer(String username) {
-        return null;
+    public Reviewer addNewReviewer(String username) throws GitLabApiException {
+        Reviewer reviewer = reviewerRepository.findByUsername(username).orElse(createReviewer(username));
+        if (!reviewer.isReviewAccess()) {
+            reviewer.setReviewAccess(true);
+        }
+        return reviewer;
+    }
+
+    private Reviewer createReviewer(String username) throws GitLabApiException {
+        Member member = gitlabApiService.getListMembers().stream()
+                .filter(x -> x.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new AutoAssigneeException("Участник '%s' не найден в проекте", username));
+
+        Reviewer reviewer = new Reviewer();
+        reviewer.setReviewAccess(true);
+        reviewer.setUsername(member.getUsername());
+        reviewer.setMemberId(member.getId());
+        return reviewer;
     }
 
     @Override
     public Reviewer deleteAccessReviewer(String username) {
-        return null;
+        Reviewer reviewer = reviewerRepository.findByUsername(username)
+                .orElseThrow(() -> new AutoAssigneeException("Участник '%s' не найден в проекте", username));
+        reviewer.setReviewAccess(false);
+        reviewerRepository.save(reviewer);
+        return reviewer;
     }
 }
