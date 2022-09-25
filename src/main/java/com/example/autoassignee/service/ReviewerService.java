@@ -16,6 +16,12 @@ public interface ReviewerService {
     List<Reviewer> getAll();
 
     /**
+     * Вернуть полный список доступных для назначения ревьюверов
+     * @return список ревьюверов
+     */
+    List<Reviewer> getAllActive();
+
+    /**
      * Получить ревьювера по id
      * @param id идентификатор ревьювера в бд
      * @return ревьювер с заданным id или null

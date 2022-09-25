@@ -28,6 +28,11 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     @Override
+    public List<Reviewer> getAllActive() {
+        return reviewerRepository.findAllByReviewAccess(true);
+    }
+
+    @Override
     public Reviewer getById(Long id) {
         return reviewerRepository.findById(id)
                 .orElseThrow(() -> new AutoAssigneeException("Участник с id '%s' не найден в базе данных", id.toString()));
