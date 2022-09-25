@@ -7,6 +7,7 @@ import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
+import org.gitlab4j.api.models.MergeRequestFilter;
 import org.gitlab4j.api.models.MergeRequestParams;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -47,6 +48,15 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     public List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException {
         return gitLabApi.getMergeRequestApi()
                 .getMergeRequests(gitlabApiProperties.getProjectId(), status);
+    }
+
+    @Override
+    @Cacheable(value = "merge-request-by-status-and-assignee")
+    public List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status) throws GitLabApiException {
+        MergeRequestFilter filter = new MergeRequestFilter();
+        filter.setAssigneeId(assigneeId);
+        filter.setState(status);
+        return gitLabApi.getMergeRequestApi().getMergeRequests(filter);
     }
 
     @Override

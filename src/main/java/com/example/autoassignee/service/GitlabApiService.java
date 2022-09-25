@@ -20,14 +20,32 @@ public interface GitlabApiService {
     List<Member> getListMembers() throws GitLabApiException;
 
     /**
-     * Список merge request проекта
+     * Список открытых merge request проекта
      * @return Список merge request проекта
      */
     List<MergeRequest> getListMergeRequest() throws GitLabApiException;
 
+    /**
+     * Список merge request проекта по статусу
+     * @param status статус merge request
+     * @return список подходящих merge request
+     */
     List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException;
 
-    Optional<MergeRequest> getMergeRequest(Long iid) throws GitLabApiException;
+    /**
+     * Список merge request проекта по id ревьювера
+     * @param assigneeId id ревьювера
+     * @param status статус возвращаемых merge request
+     * @return список подходящих merge request
+     */
+    List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status) throws GitLabApiException;
+
+    /**
+     * Merge request проекта по iid
+     * @param iid уникальный номер merge request
+     * @return merge request с заданным iid
+     */
+    Optional<MergeRequest> getMergeRequest(Long iid);
 
     /**
      * Назначить ревьювера на merge request
