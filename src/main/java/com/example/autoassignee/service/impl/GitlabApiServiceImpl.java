@@ -40,6 +40,19 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     }
 
     @Override
+    public List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException {
+        return gitLabApi.getMergeRequestApi()
+                .getMergeRequests(gitlabApiProperties.getProjectId(), status);
+    }
+
+    @Override
+    public MergeRequest getMergeRequest(Long iid) throws GitLabApiException {
+        return gitLabApi.getMergeRequestApi()
+                .getMergeRequest(gitlabApiProperties.getProjectId(), iid);
+    }
+
+
+    @Override
     public MergeRequest setAssigneeToMergeRequest(Long mergeRequestIid, Long memberId) throws GitLabApiException {
         MergeRequestParams newParams = new MergeRequestParams();
         newParams.withAssigneeId(memberId);

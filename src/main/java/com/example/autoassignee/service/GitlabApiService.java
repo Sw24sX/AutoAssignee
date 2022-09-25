@@ -24,6 +24,10 @@ public interface GitlabApiService {
      */
     List<MergeRequest> getListMergeRequest() throws GitLabApiException;
 
+    List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException;
+
+    MergeRequest getMergeRequest(Long iid) throws GitLabApiException;
+
     /**
      * Назначить ревьювера на merge request
      * @param mergeRequestIid Идентификатор merge request
