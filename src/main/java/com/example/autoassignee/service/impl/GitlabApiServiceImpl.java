@@ -1,7 +1,6 @@
 package com.example.autoassignee.service.impl;
 
 import com.example.autoassignee.persistance.properties.GitlabApiProperties;
-import com.example.autoassignee.repository.ReviewerRepository;
 import com.example.autoassignee.service.GitlabApiService;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApi;
@@ -10,6 +9,7 @@ import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
 import org.gitlab4j.api.models.MergeRequestParams;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -23,31 +23,35 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     private final GitlabApiProperties gitlabApiProperties;
     private final GitLabApi gitLabApi;
 
-    public GitlabApiServiceImpl(GitlabApiProperties gitlabApiProperties, ReviewerRepository reviewerRepository) {
+    public GitlabApiServiceImpl(GitlabApiProperties gitlabApiProperties) {
 
         this.gitlabApiProperties = gitlabApiProperties;
         this.gitLabApi = new GitLabApi(gitlabApiProperties.getUrl(), gitlabApiProperties.getToken());
     }
 
     @Override
+    @Cacheable(value = "members")
     public List<Member> getListMembers() throws GitLabApiException {
         return gitLabApi.getProjectApi().getMembers(gitlabApiProperties.getProjectId());
     }
 
     @Override
+    @Cacheable(value = "merge-request-list")
     public List<MergeRequest> getListMergeRequest() throws GitLabApiException {
         return gitLabApi.getMergeRequestApi()
                 .getMergeRequests(gitlabApiProperties.getProjectId(), Constants.MergeRequestState.OPENED);
     }
 
     @Override
+    @Cacheable(value = "merge-request-by-status")
     public List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException {
         return gitLabApi.getMergeRequestApi()
                 .getMergeRequests(gitlabApiProperties.getProjectId(), status);
     }
 
     @Override
-    public Optional<MergeRequest> getMergeRequest(Long iid) throws GitLabApiException {
+    @Cacheable(value = "merge-request")
+    public Optional<MergeRequest> getMergeRequest(Long iid) {
         return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(gitlabApiProperties.getProjectId(), iid);
     }
 
