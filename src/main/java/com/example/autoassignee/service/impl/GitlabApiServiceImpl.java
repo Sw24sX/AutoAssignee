@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -46,9 +47,8 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     }
 
     @Override
-    public MergeRequest getMergeRequest(Long iid) throws GitLabApiException {
-        return gitLabApi.getMergeRequestApi()
-                .getMergeRequest(gitlabApiProperties.getProjectId(), iid);
+    public Optional<MergeRequest> getMergeRequest(Long iid) throws GitLabApiException {
+        return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(gitlabApiProperties.getProjectId(), iid);
     }
 
 

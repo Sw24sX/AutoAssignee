@@ -6,6 +6,7 @@ import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для управления api Gitlab
@@ -26,7 +27,7 @@ public interface GitlabApiService {
 
     List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException;
 
-    MergeRequest getMergeRequest(Long iid) throws GitLabApiException;
+    Optional<MergeRequest> getMergeRequest(Long iid) throws GitLabApiException;
 
     /**
      * Назначить ревьювера на merge request

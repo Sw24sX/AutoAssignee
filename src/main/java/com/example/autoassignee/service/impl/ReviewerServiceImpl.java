@@ -29,7 +29,8 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     @Override
     public Reviewer getById(Long id) {
-        return reviewerRepository.findById(id).orElse(null);
+        return reviewerRepository.findById(id)
+                .orElseThrow(() -> new AutoAssigneeException("Участник с id '%s' не найден в базе данных", id.toString()));
     }
 
     @Override
@@ -51,7 +52,8 @@ public class ReviewerServiceImpl implements ReviewerService {
         reviewer.setReviewAccess(true);
         reviewer.setUsername(member.getUsername());
         reviewer.setMemberId(member.getId());
-        return reviewer;
+        reviewer.setAccessLevel(member.getAccessLevel());
+        return reviewerRepository.save(reviewer);
     }
 
     @Override
