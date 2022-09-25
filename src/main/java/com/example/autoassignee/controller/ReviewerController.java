@@ -12,11 +12,9 @@ import java.util.List;
 @RequestMapping("reviewer")
 public class ReviewerController {
     private final ReviewerService reviewerService;
-    private final MergeRequestService mergeRequestService;
 
-    public ReviewerController(ReviewerService reviewerService, MergeRequestService mergeRequestService) {
+    public ReviewerController(ReviewerService reviewerService) {
         this.reviewerService = reviewerService;
-        this.mergeRequestService = mergeRequestService;
     }
 
     @GetMapping
@@ -40,15 +38,5 @@ public class ReviewerController {
     public Reviewer deleteAccessReviewer(@PathVariable("id") Long id) {
         Reviewer reviewer = reviewerService.getById(id);
         return reviewerService.deleteAccessReviewer(reviewer.getUsername());
-    }
-
-    @PostMapping("{reviewer-id}/merge-request/{merge-request-id}")
-    public boolean setAssigneeMergeRequest(@PathVariable("reviewer-id") Long reviewerId,
-                                           @PathVariable("merge-request-id") Long mergeRequestId)
-            throws GitLabApiException {
-
-        Reviewer reviewer = reviewerService.getById(reviewerId);
-        mergeRequestService.setAssignee(mergeRequestId, reviewer.getMemberId());
-        return true;
     }
 }
