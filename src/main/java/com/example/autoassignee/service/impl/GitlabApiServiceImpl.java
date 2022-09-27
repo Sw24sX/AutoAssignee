@@ -44,14 +44,14 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     }
 
     @Override
-    @Cacheable(value = "merge-request-by-status")
+    @Cacheable(value = "merge-request-by-status", key = "#status")
     public List<MergeRequest> getListMergeRequestByStatus(Constants.MergeRequestState status) throws GitLabApiException {
         return gitLabApi.getMergeRequestApi()
                 .getMergeRequests(gitlabApiProperties.getProjectId(), status);
     }
 
     @Override
-    @Cacheable(value = "merge-request-by-status-and-assignee")
+    @Cacheable(value = "merge-request-by-status-and-assignee", key = "#assigneeId")
     public List<MergeRequest> getListMergeRequestByAssigneeId(Long assigneeId, Constants.MergeRequestState status) throws GitLabApiException {
         MergeRequestFilter filter = new MergeRequestFilter();
         filter.setAssigneeId(assigneeId);
@@ -60,7 +60,7 @@ public class GitlabApiServiceImpl implements GitlabApiService {
     }
 
     @Override
-    @Cacheable(value = "merge-request")
+    @Cacheable(value = "merge-request", key = "#iid")
     public Optional<MergeRequest> getMergeRequest(Long iid) {
         return gitLabApi.getMergeRequestApi().getOptionalMergeRequest(gitlabApiProperties.getProjectId(), iid);
     }

@@ -27,8 +27,7 @@ public class FullChooseAssignee {
         List<Reviewer> reviewers = excludeReviewers(reviewerService.getAllActive());
         Optional<Candidate> candidate = reviewers.stream()
                 .map(reviewer -> new Candidate(reviewer, getWeight(reviewer, mergeRequest)))
-                .sorted()
-                .findFirst();
+                .max(Candidate::compareTo);
         return candidate
                 .orElseThrow(() -> new AutoAssigneeException("Для merge request с iid '%s' удалось найти ни одного ревьювера",
                         mergeRequest.getIid().toString()))

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Исключает ревьюверов, на которых уже назначено достаточно merge request'ов на текущий момент
+ */
 @Component
 public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
 
