@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Candidate implements Comparable {
     private Reviewer reviewer;
-    private Integer weight;
+    private Long weight;
 
     @Override
     public boolean equals(Object obj) {
