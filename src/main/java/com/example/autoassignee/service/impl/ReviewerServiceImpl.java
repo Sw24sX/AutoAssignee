@@ -66,7 +66,11 @@ public class ReviewerServiceImpl implements ReviewerService {
         Reviewer reviewer = reviewerRepository.findByUsername(username)
                 .orElseThrow(() -> new AutoAssigneeException("Участник '%s' не найден в проекте", username));
         reviewer.setReviewAccess(false);
-        reviewerRepository.save(reviewer);
-        return reviewer;
+        return updateReviewer(reviewer);
+    }
+
+    @Override
+    public Reviewer updateReviewer(Reviewer reviewer) {
+        return reviewerRepository.save(reviewer);
     }
 }

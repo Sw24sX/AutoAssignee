@@ -43,6 +43,7 @@ public class MinimizationCountReview extends PartChooseAssignee {
 
     private void fillMaxAndMinValues() {
         if (maxCount != null && minCount != null) {
+
             return;
         }
 
@@ -57,6 +58,7 @@ public class MinimizationCountReview extends PartChooseAssignee {
 
     private Integer calculateWeight(Integer min, Integer max, Integer current) {
         if (max.equals(min)) {
+
             return 0;
         }
         return ((current - min) * 100) / (max - min);

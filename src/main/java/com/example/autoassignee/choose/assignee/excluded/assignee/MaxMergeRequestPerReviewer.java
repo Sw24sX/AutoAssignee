@@ -29,10 +29,11 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
     }
 
     @Override
-    protected boolean getPartValue(Reviewer reviewer) {
+    protected boolean getPartValue(Reviewer reviewer, MergeRequest mergeRequest) {
         try {
             List<MergeRequest> mergeRequests = gitlabApiService
                     .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
+
             return mergeRequests.size() >= properties.getMaxMergeRequests();
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());

@@ -43,4 +43,11 @@ public interface ReviewerService {
      * @return Измененный ревьювер
      */
     Reviewer deleteAccessReviewer(String username);
+
+    /**
+     * Обновить данные по ревьюверу
+     * @param reviewer обновленный объект ревьювера
+     * @return сохраненный ревьювер
+     */
+    Reviewer updateReviewer(Reviewer reviewer);
 }

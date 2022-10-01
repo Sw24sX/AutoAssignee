@@ -16,6 +16,7 @@ public class CacheConfig {
     @Bean
     @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public CacheManager cacheManager() {
+
         return new ConcurrentMapCacheManager();
     }
 }

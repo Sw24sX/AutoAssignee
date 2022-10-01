@@ -24,27 +24,39 @@ public class FullChooseAssignee {
     }
 
     public Reviewer getAssignee(MergeRequest mergeRequest) {
-        List<Reviewer> reviewers = excludeReviewers(reviewerService.getAllActive());
+        List<Reviewer> reviewers = excludeReviewers(reviewerService.getAllActive(), mergeRequest);
+        if (reviewers.size() <= 1) {
+            return reviewers.stream()
+                    .findFirst()
+                    .orElseThrow(() -> new AutoAssigneeException(
+                        "Не удалось найти ни одного подходящего ревьювера для merge request с iid = %s",
+                        mergeRequest.getIid().toString()));
+        }
+
         Optional<Candidate> candidate = reviewers.stream()
                 .map(reviewer -> new Candidate(reviewer, getWeight(reviewer, mergeRequest)))
                 .max(Candidate::compareTo);
+
         return candidate
                 .orElseThrow(() -> new AutoAssigneeException("Для merge request с iid '%s' удалось найти ни одного ревьювера",
                         mergeRequest.getIid().toString()))
                 .getReviewer();
     }
 
-    private List<Reviewer> excludeReviewers(List<Reviewer> reviewers) {
+    private List<Reviewer> excludeReviewers(List<Reviewer> reviewers, MergeRequest mergeRequest) {
+
         return reviewers.stream()
-                .filter(x -> !isReviewerExcluded(x))
+                .filter(x -> !isReviewerExcluded(x, mergeRequest))
                 .toList();
     }
 
-    private boolean isReviewerExcluded(Reviewer reviewer) {
-        return partsExcludedAssignee.stream().anyMatch(x -> x.excludeAssignee(reviewer));
+    private boolean isReviewerExcluded(Reviewer reviewer, MergeRequest mergeRequest) {
+
+        return partsExcludedAssignee.stream().anyMatch(x -> x.excludeAssignee(reviewer, mergeRequest));
     }
 
     private long getWeight(Reviewer reviewer, MergeRequest mergeRequest) {
+
         return partsChooseAssignees.stream()
                 .mapToLong(x -> x.getWeight(reviewer, mergeRequest))
                 .sum();

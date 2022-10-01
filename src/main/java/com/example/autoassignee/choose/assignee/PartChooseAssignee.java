@@ -23,7 +23,7 @@ public abstract class PartChooseAssignee {
      * @return вес в промежутке от 0 до 100
      */
     public Integer getWeight(Reviewer reviewer, MergeRequest mergeRequest) {
-        if (baseChooseAssigneeProperties.isEnable() || baseChooseAssigneeProperties.getCoefficient() == 0) {
+        if (!baseChooseAssigneeProperties.isEnable() || baseChooseAssigneeProperties.getCoefficient() == 0) {
             return 0;
         }
         double result = getWeightPart(reviewer, mergeRequest) * baseChooseAssigneeProperties.getCoefficient();

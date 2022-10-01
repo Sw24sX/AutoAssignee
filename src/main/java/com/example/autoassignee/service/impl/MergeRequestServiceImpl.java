@@ -1,15 +1,19 @@
 package com.example.autoassignee.service.impl;
 
 import com.example.autoassignee.choose.assignee.FullChooseAssignee;
+import com.example.autoassignee.persistance.domain.HistoryReview;
 import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.persistance.exception.AutoAssigneeException;
+import com.example.autoassignee.repository.HistoryReviewRepository;
 import com.example.autoassignee.service.GitlabApiService;
 import com.example.autoassignee.service.MergeRequestService;
+import com.example.autoassignee.service.ReviewerService;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Member;
 import org.gitlab4j.api.models.MergeRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,10 +23,15 @@ public class MergeRequestServiceImpl implements MergeRequestService {
 
     private final GitlabApiService gitlabApiService;
     private final FullChooseAssignee fullChooseAssignee;
+    private final HistoryReviewRepository historyReviewRepository;
+    private final ReviewerService reviewerService;
 
-    public MergeRequestServiceImpl(GitlabApiService gitlabApiService, FullChooseAssignee fullChooseAssignee) {
+    public MergeRequestServiceImpl(GitlabApiService gitlabApiService, FullChooseAssignee fullChooseAssignee,
+                                   HistoryReviewRepository historyReviewRepository, ReviewerService reviewerService) {
         this.gitlabApiService = gitlabApiService;
         this.fullChooseAssignee = fullChooseAssignee;
+        this.historyReviewRepository = historyReviewRepository;
+        this.reviewerService = reviewerService;
     }
 
     @Override
@@ -45,12 +54,14 @@ public class MergeRequestServiceImpl implements MergeRequestService {
     }
 
     @Override
+    @Transactional
     public MergeRequest setAutoAssignee(Long mergeRequestIid) {
 
         try {
             MergeRequest mergeRequest = getOpenMergeRequest(mergeRequestIid);
             Reviewer reviewer = fullChooseAssignee.getAssignee(mergeRequest);
             gitlabApiService.setAssigneeToMergeRequest(mergeRequestIid, reviewer.getMemberId());
+            updateReviewer(reviewer, mergeRequest);
 
             return mergeRequest;
 
@@ -69,5 +80,18 @@ public class MergeRequestServiceImpl implements MergeRequestService {
         }
         
         return mergeRequest;
+    }
+
+    private void updateReviewer(Reviewer reviewer, MergeRequest mergeRequest) {
+        String taskBranch = mergeRequest.getSourceBranch();
+        if (!historyReviewRepository.existsByBranchNameAndReviewer_Id(taskBranch, reviewer.getId())) {
+            HistoryReview historyReview = new HistoryReview();
+            historyReview.setReviewer(reviewer);
+            historyReview.setBranchName(taskBranch);
+            historyReview = historyReviewRepository.save(historyReview);
+            reviewer.getHistoryReviews().add(historyReview);
+        }
+
+        reviewerService.updateReviewer(reviewer);
     }
 }
