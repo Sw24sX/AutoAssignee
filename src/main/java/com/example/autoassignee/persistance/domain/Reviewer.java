@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gitlab4j.api.models.AccessLevel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "reviewer")
@@ -27,4 +26,7 @@ public class Reviewer extends BaseEntity {
 
     @Column(name = "review_access")
     private boolean isReviewAccess;
+
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
+    private List<HistoryReview> historyReviews;
 }
