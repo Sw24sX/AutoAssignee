@@ -1,5 +1,6 @@
 package com.example.autoassignee.choose.assignee;
 
+import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.persistance.properties.choose.assignee.properties.BaseChooseAssigneeProperties;
 import org.gitlab4j.api.models.MergeRequest;
 
@@ -18,17 +19,17 @@ public abstract class PartChooseAssignee {
      * Получить вес для переданного ревьювера
      * Вес - целое число в промежутке от 0 до 100,
      * где 0 - ревьювер совершенно не подходит для ревью из рассчета данной части алгоритма, а 100 - абсолютно подходит
-     * @param reviewerId id ревьювера в бд, для которого будет рассчитываться вес
+     * @param reviewer ревьювер, для которого будет рассчитываться вес
      * @return вес в промежутке от 0 до 100
      */
-    public Integer getWeight(Long reviewerId, MergeRequest mergeRequest) {
+    public Integer getWeight(Reviewer reviewer, MergeRequest mergeRequest) {
         if (baseChooseAssigneeProperties.isEnable() || baseChooseAssigneeProperties.getCoefficient() == 0) {
             return 0;
         }
-        Double result = getWeightPart(reviewerId, mergeRequest) * baseChooseAssigneeProperties.getCoefficient();
+        double result = getWeightPart(reviewer, mergeRequest) * baseChooseAssigneeProperties.getCoefficient();
 
-        return result.intValue();
+        return (int) result;
     }
 
-    protected abstract Integer getWeightPart(Long reviewerId, MergeRequest mergeRequest);
+    protected abstract Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest);
 }

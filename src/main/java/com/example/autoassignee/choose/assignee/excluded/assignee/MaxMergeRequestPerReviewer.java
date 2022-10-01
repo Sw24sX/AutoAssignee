@@ -1,6 +1,7 @@
 package com.example.autoassignee.choose.assignee.excluded.assignee;
 
 import com.example.autoassignee.choose.assignee.PartExcludedAssignee;
+import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.persistance.exception.AutoAssigneeException;
 import com.example.autoassignee.persistance.properties.excluded.assignee.properties.MaxMergeRequestPerReviewerProperties;
 import com.example.autoassignee.service.GitlabApiService;
@@ -28,10 +29,10 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
     }
 
     @Override
-    protected boolean getPartValue(Long reviewerId) {
+    protected boolean getPartValue(Reviewer reviewer) {
         try {
             List<MergeRequest> mergeRequests = gitlabApiService
-                    .getListMergeRequestByAssigneeId(reviewerId, Constants.MergeRequestState.OPENED);
+                    .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
             return mergeRequests.size() >= properties.getMaxMergeRequests();
         } catch (GitLabApiException e) {
             throw new AutoAssigneeException(e.getMessage());

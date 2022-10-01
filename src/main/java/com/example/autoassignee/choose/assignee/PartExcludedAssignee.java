@@ -1,5 +1,6 @@
 package com.example.autoassignee.choose.assignee;
 
+import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.persistance.properties.BaseAutoAssigneePartProperties;
 
 /**
@@ -15,15 +16,15 @@ public abstract class PartExcludedAssignee {
     /**
      * Метод, определяющий необходимость исключить ревьюверо из списка возможных к назначению
      * где true - необходимо исключить из списка назначемых
-     * @param reviewerId reviewerId id ревьювера в бд, для которого будет приниматься решение об исключении
+     * @param reviewer ревьювер, для которого будет приниматься решение об исключении
      * @return решение об исключении ревьювера
      */
-    public boolean excludeAssignee(Long reviewerId) {
+    public boolean excludeAssignee(Reviewer reviewer) {
         if (!properties.isEnable()) {
             return false;
         }
-        return getPartValue(reviewerId);
+        return getPartValue(reviewer);
     }
 
-    protected abstract boolean getPartValue(Long reviewerId);
+    protected abstract boolean getPartValue(Reviewer reviewer);
 }

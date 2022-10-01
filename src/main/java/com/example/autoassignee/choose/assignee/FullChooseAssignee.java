@@ -41,12 +41,12 @@ public class FullChooseAssignee {
     }
 
     private boolean isReviewerExcluded(Reviewer reviewer) {
-        return partsExcludedAssignee.stream().anyMatch(x -> x.excludeAssignee(reviewer.getId()));
+        return partsExcludedAssignee.stream().anyMatch(x -> x.excludeAssignee(reviewer));
     }
 
     private int getWeight(Reviewer reviewer, MergeRequest mergeRequest) {
         return partsChooseAssignees.stream()
-                .mapToInt(x -> x.getWeight(reviewer.getId(), mergeRequest))
+                .mapToInt(x -> x.getWeight(reviewer, mergeRequest))
                 .sum();
     }
 }
