@@ -1,0 +1,1 @@
+Добавил в ~/.profile строку `export JASYPT_ENCRYPTOR_PASSWORD="<password>"`
