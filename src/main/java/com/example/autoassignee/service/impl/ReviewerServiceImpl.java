@@ -39,15 +39,16 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     @Override
-    public Reviewer addNewReviewer(String username) throws GitLabApiException {
-        Reviewer reviewer = reviewerRepository.findByUsername(username).orElse(createReviewer(username));
+    public Reviewer addNewReviewer(String username, String gitUsername) throws GitLabApiException {
+        Reviewer reviewer = reviewerRepository.findByUsernameOrGitUsername(username, gitUsername)
+                .orElse(createReviewer(username, gitUsername));
         if (!reviewer.isReviewAccess()) {
             reviewer.setReviewAccess(true);
         }
         return reviewer;
     }
 
-    private Reviewer createReviewer(String username) throws GitLabApiException {
+    private Reviewer createReviewer(String username, String gitUsername) throws GitLabApiException {
         Member member = gitlabApiService.getListMembers().stream()
                 .filter(x -> x.getUsername().equals(username))
                 .findFirst()
@@ -58,6 +59,7 @@ public class ReviewerServiceImpl implements ReviewerService {
         reviewer.setUsername(member.getUsername());
         reviewer.setMemberId(member.getId());
         reviewer.setAccessLevel(member.getAccessLevel());
+        reviewer.setGitUsername(gitUsername);
         return reviewerRepository.save(reviewer);
     }
 

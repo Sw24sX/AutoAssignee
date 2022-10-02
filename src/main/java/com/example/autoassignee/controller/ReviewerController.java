@@ -29,9 +29,10 @@ public class ReviewerController {
     }
 
     @PostMapping
-    public Reviewer addReviewer(@RequestParam String username) throws GitLabApiException {
+    public Reviewer addReviewer(@RequestParam String username,
+                                @RequestParam String gitUsername) throws GitLabApiException {
 
-        return reviewerService.addNewReviewer(username);
+        return reviewerService.addNewReviewer(username, gitUsername);
     }
 
     @PutMapping("{id}")
