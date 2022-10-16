@@ -56,6 +56,7 @@ public class GitlabApiServiceImpl implements GitlabApiService {
         MergeRequestFilter filter = new MergeRequestFilter();
         filter.setAssigneeId(assigneeId);
         filter.setState(status);
+        filter.setProjectId(Long.parseLong(gitlabApiProperties.getProjectId()));
         return gitLabApi.getMergeRequestApi().getMergeRequests(filter);
     }
 
