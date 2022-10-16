@@ -2,6 +2,7 @@ package com.example.autoassignee.choose.assignee.choose.assignee;
 
 import com.example.autoassignee.choose.assignee.PartChooseAssignee;
 import com.example.autoassignee.persistance.domain.Reviewer;
+import com.example.autoassignee.persistance.dto.PercentWeightByMinMaxSettings;
 import com.example.autoassignee.persistance.exception.AutoAssigneeException;
 import com.example.autoassignee.persistance.properties.choose.assignee.properties.MinimizationCountReviewProperties;
 import com.example.autoassignee.service.PercentWeightByMinMaxValues;
@@ -34,7 +35,13 @@ public class MinimizationCountReview extends PartChooseAssignee {
     @Override
     protected Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest) {
         log.info("Run MinimizationCountReview for reviewer {}", reviewer.getUsername());
-        return percentWeightByMinMaxValues.getCorrectWeight(new CurrentWeight(), reviewer, mergeRequest);
+        PercentWeightByMinMaxSettings settings = PercentWeightByMinMaxSettings.builder()
+                .reviewer(reviewer)
+                .mergeRequest(mergeRequest)
+                .weightByNotValues(new CurrentWeight())
+                .isRevert(true)
+                .build();
+        return percentWeightByMinMaxValues.getCorrectWeight(settings);
     }
 
     private class CurrentWeight implements WeightByNotValues {
