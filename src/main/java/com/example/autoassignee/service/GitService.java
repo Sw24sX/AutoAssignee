@@ -41,7 +41,7 @@ public interface GitService {
     /**
      * Получить информацию о последнем авторе изменения каждой строки файла (git blame path/to/file)
      *
-     * @param fileFromRepo Путь к файлу репозитория, для которого необходима информация
+     * @param fileFromRepo Путь к файлу от корня репозитория
      * @return Результат git blame
      */
     BlameResult getBlameFile(String fileFromRepo);

@@ -8,8 +8,24 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class GitlabApiProperties {
+
+    /**
+     * Базовый url gitlab
+     */
     private String url;
+
+    /**
+     * Токен доступа к gitlab
+     */
     private String token;
+
+    /**
+     * id проекта
+     */
     private String projectId;
+
+    /**
+     * Имя пользователя для доступа к gitlab
+     */
     private String username;
 }
