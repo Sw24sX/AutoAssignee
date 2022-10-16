@@ -75,4 +75,10 @@ public class ReviewerServiceImpl implements ReviewerService {
     public Reviewer updateReviewer(Reviewer reviewer) {
         return reviewerRepository.save(reviewer);
     }
+
+    @Override
+    public boolean isReviewerGitName(Reviewer reviewer, String name) {
+        // TODO: 16.10.2022 Добавить более серьезную проверку на соответствие ревьювера имени в репозитории
+        return reviewer.getGitUsername().equals(name);
+    }
 }
