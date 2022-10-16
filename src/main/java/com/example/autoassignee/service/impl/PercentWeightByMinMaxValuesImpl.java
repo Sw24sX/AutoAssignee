@@ -4,6 +4,7 @@ import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.service.WeightByNotValues;
 import com.example.autoassignee.service.PercentWeightByMinMaxValues;
 import com.example.autoassignee.service.ReviewerService;
+import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.models.MergeRequest;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Slf4j
 public class PercentWeightByMinMaxValuesImpl implements PercentWeightByMinMaxValues {
     private final ReviewerService reviewerService;
     private final PercentWeightByMinMaxValues self;
@@ -23,7 +25,6 @@ public class PercentWeightByMinMaxValuesImpl implements PercentWeightByMinMaxVal
     }
 
     public Integer getCorrectWeight(WeightByNotValues weightByNotValues, Reviewer reviewer, MergeRequest mergeRequest) {
-
         int minCount = Integer.MAX_VALUE;
         int maxCount = Integer.MIN_VALUE;
         for (Reviewer activeReviewer : reviewerService.getAllActive()) {

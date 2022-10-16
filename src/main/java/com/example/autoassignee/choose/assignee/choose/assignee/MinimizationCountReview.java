@@ -7,6 +7,7 @@ import com.example.autoassignee.persistance.properties.choose.assignee.propertie
 import com.example.autoassignee.service.PercentWeightByMinMaxValues;
 import com.example.autoassignee.service.WeightByNotValues;
 import com.example.autoassignee.service.GitlabApiService;
+import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.MergeRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
  * Присваивает вес в 100 ревьюверу с наименьшим количеством merge request'ов и 0 с наибольшим
  */
 @Component
+@Slf4j
 public class MinimizationCountReview extends PartChooseAssignee {
 
     private final GitlabApiService gitlabApiService;
@@ -31,6 +33,7 @@ public class MinimizationCountReview extends PartChooseAssignee {
 
     @Override
     protected Integer getWeightPart(Reviewer reviewer, MergeRequest mergeRequest) {
+        log.info("Run MinimizationCountReview for reviewer {}", reviewer.getUsername());
         return percentWeightByMinMaxValues.getCorrectWeight(new CurrentWeight(), reviewer, mergeRequest);
     }
 

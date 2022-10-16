@@ -5,6 +5,7 @@ import com.example.autoassignee.persistance.domain.Reviewer;
 import com.example.autoassignee.persistance.exception.AutoAssigneeException;
 import com.example.autoassignee.persistance.properties.excluded.assignee.properties.MaxMergeRequestPerReviewerProperties;
 import com.example.autoassignee.service.GitlabApiService;
+import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.MergeRequest;
@@ -16,6 +17,7 @@ import java.util.List;
  * Исключает ревьюверов, на которых уже назначено достаточно merge request'ов на текущий момент
  */
 @Component
+@Slf4j
 public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
 
     private final GitlabApiService gitlabApiService;
@@ -30,6 +32,7 @@ public class MaxMergeRequestPerReviewer extends PartExcludedAssignee {
 
     @Override
     protected boolean getPartValue(Reviewer reviewer, MergeRequest mergeRequest) {
+        log.info("Run MaxMergeRequestPerReviewer for reviewer {}", reviewer.getUsername());
         try {
             List<MergeRequest> mergeRequests = gitlabApiService
                     .getListMergeRequestByAssigneeId(reviewer.getMemberId(), Constants.MergeRequestState.OPENED);
